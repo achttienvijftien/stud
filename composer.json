@@ -1,0 +1,19 @@
+{
+  "name": "achttienvijftien/stud",
+  "authors": [
+    {
+      "name": "1815",
+      "email": "it@1815.nl",
+      "homepage": "https://www.1815.nl"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "achttienvijftien/stud": "dev-main"
+  },
+  "autoload": {
+    "psr-4": {
+      "AchttienVijftien\\Stud\\": "src"
+    }
+  }
+}
