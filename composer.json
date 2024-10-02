@@ -8,8 +8,7 @@
     }
   ],
   "require": {
-    "php": "^8.2",
-    "achttienvijftien/stud": "dev-main"
+    "php": "^8.2"
   },
   "autoload": {
     "psr-4": {
