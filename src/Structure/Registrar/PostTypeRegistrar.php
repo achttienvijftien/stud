@@ -31,7 +31,7 @@ class PostTypeRegistrar implements RegisterInterface {
 	 *
 	 * @return void
 	 */
-	public function register( RegistrablePostTypeInterface|RegistrableInterface $registrable ): void {
+	public function register(): void {
 		\register_post_type(
 			$this->registrable->get_key(),
 			$this->registrable->get_args(),
