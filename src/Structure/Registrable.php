@@ -5,6 +5,7 @@ namespace AchttienVijftien\Stud\Structure;
 use AchttienVijftien\Stud\BootableInterface;
 use AchttienVijftien\Stud\Structure\Registrar\MetaRegistrar;
 use AchttienVijftien\Stud\Structure\Registrar\PostTypeRegistrar;
+use AchttienVijftien\Stud\Structure\Registrar\RegisterInterface;
 use AchttienVijftien\Stud\Structure\Registrar\TaxonomyRegistrar;
 
 /**
@@ -13,7 +14,7 @@ use AchttienVijftien\Stud\Structure\Registrar\TaxonomyRegistrar;
  * @package AchttienVijftien\Stud\Structure
  */
 class Registrable implements BootableInterface {
-	
+
 	/**
 	 * All registrables, by type.
 	 *
@@ -31,13 +32,13 @@ class Registrable implements BootableInterface {
 		);
 
 		$this->register_registrables(
-			\apply_filters( 'achttienvijftien/meta_registrar_class', MetaRegistrar::class ),
-			$this->get_registrables_by_type( 'meta' )
+			\apply_filters( 'achttienvijftien/taxonomy_registrar_class', TaxonomyRegistrar::class ),
+			$this->get_registrables_by_type( 'taxonomy' )
 		);
 
 		$this->register_registrables(
-			\apply_filters( 'achttienvijftien/taxonomy_registrar_class', TaxonomyRegistrar::class ),
-			$this->get_registrables_by_type( 'taxonomy' )
+			\apply_filters( 'achttienvijftien/meta_registrar_class', MetaRegistrar::class ),
+			$this->get_registrables_by_type( 'meta' )
 		);
 	}
 
@@ -50,12 +51,12 @@ class Registrable implements BootableInterface {
 	 * @return void
 	 */
 	private function register_registrables( string $registrar_class, array $registrables ): void {
-		if ( ! class_implements( $registrar_class, RegistrableInterface::class ) ) {
+		if ( ! class_implements( $registrar_class, RegisterInterface::class ) ) {
 			return;
 		}
 
 		foreach ( $registrables as $registrable ) {
-			new $registrar_class( $registrable );
+			( new $registrar_class( $registrable ) )->prepare();
 		}
 	}
 
