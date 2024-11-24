@@ -14,5 +14,8 @@
     "psr-4": {
       "AchttienVijftien\\Stud\\": "src"
     }
+  },
+  "suggest": {
+    "symfony/asset": "Asset versioning implementation"
   }
 }

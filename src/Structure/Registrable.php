@@ -2,7 +2,7 @@
 
 namespace AchttienVijftien\Stud\Structure;
 
-use AchttienVijftien\Stud\BootableInterface;
+use AchttienVijftien\Stud\Boot\BootableInterface;
 use AchttienVijftien\Stud\Structure\Registrar\MetaRegistrar;
 use AchttienVijftien\Stud\Structure\Registrar\PostTypeRegistrar;
 use AchttienVijftien\Stud\Structure\Registrar\RegisterInterface;

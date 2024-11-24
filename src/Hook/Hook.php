@@ -2,7 +2,7 @@
 
 namespace AchttienVijftien\Stud\Hook;
 
-use AchttienVijftien\Stud\BootableInterface;
+use AchttienVijftien\Stud\Boot\BootableInterface;
 
 /**
  * Class Hook.

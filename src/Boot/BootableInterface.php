@@ -1,6 +1,6 @@
 <?php
 
-namespace AchttienVijftien\Stud;
+namespace AchttienVijftien\Stud\Boot;
 
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
