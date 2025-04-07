@@ -20,13 +20,6 @@ class MetaRegistrar implements RegisterInterface {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	public function prepare(): void {
-		\add_action( 'init', [ $this, 'register' ] );
-	}
-
-	/**
 	 * Registers meta key.
 	 *
 	 * @return void

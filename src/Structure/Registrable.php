@@ -2,18 +2,28 @@
 
 namespace AchttienVijftien\Stud\Structure;
 
-use AchttienVijftien\Stud\Boot\BootableInterface;
+use AchttienVijftien\Stud\Fire\FireableInterface;
 use AchttienVijftien\Stud\Structure\Registrar\MetaRegistrar;
 use AchttienVijftien\Stud\Structure\Registrar\PostTypeRegistrar;
-use AchttienVijftien\Stud\Structure\Registrar\RegisterInterface;
 use AchttienVijftien\Stud\Structure\Registrar\TaxonomyRegistrar;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * Class Registrable.
  *
  * @package AchttienVijftien\Stud\Structure
  */
-class Registrable implements BootableInterface {
+#[AutoconfigureTag( 'stud.fireable', [ 'tag' => 'stud.registrable', 'default_hook' => 'init' ] )]
+class Registrable implements FireableInterface {
+
+	/**
+	 * Known registrars.
+	 */
+	private const REGISTRARS = [
+		'post_type' => PostTypeRegistrar::class,
+		'taxonomy'  => TaxonomyRegistrar::class,
+		'meta'      => MetaRegistrar::class,
+	];
 
 	/**
 	 * All registrables, by type.
@@ -25,61 +35,53 @@ class Registrable implements BootableInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function boot(): void {
-		$this->register_registrables(
-			\apply_filters( 'achttienvijftien/taxonomy_registrar_class', PostTypeRegistrar::class ),
-			$this->get_registrables_by_type( 'post_type' )
-		);
-
-		$this->register_registrables(
-			\apply_filters( 'achttienvijftien/taxonomy_registrar_class', TaxonomyRegistrar::class ),
-			$this->get_registrables_by_type( 'taxonomy' )
-		);
-
-		$this->register_registrables(
-			\apply_filters( 'achttienvijftien/meta_registrar_class', MetaRegistrar::class ),
-			$this->get_registrables_by_type( 'meta' )
-		);
-	}
-
-	/**
-	 * Registers registrable using corresponding registrar.
-	 *
-	 * @param string $registrar_class Registrar class.
-	 * @param array $registrables Registrables corresponding to registrar.
-	 *
-	 * @return void
-	 */
-	private function register_registrables( string $registrar_class, array $registrables ): void {
-		if ( ! class_implements( $registrar_class, RegisterInterface::class ) ) {
+	public function fire( object $service ): void {
+		if ( ! $service instanceof RegistrableInterface ) {
 			return;
 		}
 
-		foreach ( $registrables as $registrable ) {
-			( new $registrar_class( $registrable ) )->prepare();
+		$registrar = $this->get_registrar_by_registrable( $service::class );
+		if ( ! $registrar ) {
+			return;
 		}
+
+		( new $registrar( $service ) )->register();
+	}
+
+	/**
+	 * Gets registrar by registrable.
+	 *
+	 * @param string $registrable_class Registrable class.
+	 *
+	 * @return string|null
+	 */
+	public function get_registrar_by_registrable( string $registrable_class ): ?string {
+		$type = $this->registrables[ $registrable_class ] ?? null;
+		if ( null === $type ) {
+			return null;
+		}
+
+		if ( ! isset( self::REGISTRARS[ $type ] ) ) {
+			return null;
+		}
+
+		$registrar_class = \apply_filters( "achttienvijftien/{$type}_registrar_class", self::REGISTRARS[ $type ] );
+		if ( ! class_implements( $registrar_class, RegisterInterface::class ) ) {
+			return null;
+		}
+
+		return $registrar_class;
 	}
 
 	/**
 	 * Adds registrable.
 	 *
 	 * @param RegistrableInterface $registrable Registrable.
-	 * @param string $type Registrable type.
+	 * @param string               $type        Registrable type.
 	 *
 	 * @return void
 	 */
 	public function add_registrable( RegistrableInterface $registrable, string $type ): void {
-		$this->registrables[ $type ][] = $registrable;
-	}
-
-	/**
-	 * Gets registrables by type.
-	 *
-	 * @param string $type Type to get registrables of.
-	 *
-	 * @return array
-	 */
-	public function get_registrables_by_type( string $type ): array {
-		return $this->registrables[ $type ] ?? [];
+		$this->registrables[ $registrable::class ] = $type;
 	}
 }

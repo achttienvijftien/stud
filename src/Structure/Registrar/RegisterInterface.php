@@ -22,5 +22,5 @@ interface RegisterInterface {
 	 *
 	 * @return void
 	 */
-	public function prepare(): void;
+	public function register(): void;
 }

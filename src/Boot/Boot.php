@@ -2,21 +2,29 @@
 
 namespace AchttienVijftien\Stud\Boot;
 
+use AchttienVijftien\Stud\Fire\FireableInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
 /**
  * Class Boot.
  *
  * @package AchttienVijftien\Stud
  */
-class Boot {
+#[AutoconfigureTag( 'stud.fireable', [ 'tag' => 'stud.bootable' ] )]
+class Boot implements FireableInterface {
+
 	/**
-	 * Boot constructor.
+	 * Boots the service.
 	 *
-	 * @param iterable $services All services needing to be booted.
+	 * @param object $service
+	 *
+	 * @return void
 	 */
-	public function __construct( iterable $services ) {
-		/** @var BootableInterface $service */
-		foreach ( $services as $service ) {
-			$service->boot();
+	public function fire( object $service ): void {
+		if ( ! $service instanceof BootableInterface ) {
+			return;
 		}
+
+		$service->boot();
 	}
 }
