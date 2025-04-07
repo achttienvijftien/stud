@@ -28,6 +28,15 @@ class OnHook {
 	}
 
 	/**
+	 * Dumps this instance to an array.
+	 *
+	 * @return array
+	 */
+	public function to_array(): array {
+		return get_object_vars( $this );
+	}
+
+	/**
 	 * Creates a new instance from an array.
 	 *
 	 * @param array $data Data to create the instance from.
