@@ -18,13 +18,6 @@ class PostTypeRegistrar implements RegisterInterface {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	public function prepare(): void {
-		\add_action( 'init', [ $this, 'register' ] );
-	}
-
-	/**
 	 * Registers given post types.
 	 *
 	 * @param RegistrablePostTypeInterface|RegistrableInterface $registrable
